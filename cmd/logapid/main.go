@@ -18,6 +18,7 @@ var (
 )
 
 func main() {
+	bind := flag.String("bind", "", "Address to bind on")
 	port := flag.Int("port", 8080, "Port to listen on")
 	compress := flag.String("compress", "zst", "Compression format (zst, bz2, gz, xz)")
 	storageDir := flag.String("storage", "", "Storage dir")
@@ -71,7 +72,7 @@ func main() {
 	mux.HandleFunc("GET /api/logs/{user}/{date}", server.ListFiles)
 	mux.HandleFunc("GET /api/logs/{user}/{date}/{name}", server.GetFile)
 
-	addr := fmt.Sprintf(":%d", *port)
+	addr := fmt.Sprintf("%s:%d", *bind, *port)
 	fmt.Fprintf(os.Stderr, "Listening on %s\n", addr)
 	fmt.Fprintf(os.Stderr, "   POST /api/logs\n")
 	fmt.Fprintf(os.Stderr, "   GET  /api/logs/{user}/{date}\n")
