@@ -174,7 +174,7 @@ func (s *Server) ListMonths(w http.ResponseWriter, r *http.Request) {
 			continue
 		}
 
-		months = append(months, monthEntry.Name())
+		months = append(months, name)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
