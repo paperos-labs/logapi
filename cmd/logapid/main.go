@@ -14,7 +14,7 @@ import (
 
 var (
 	tsvFile    = "credentials.tsv"
-	staleAfter = 93 * 24 * time.Hour
+	staleAfter = 63 * 24 * time.Hour
 )
 
 func main() {
