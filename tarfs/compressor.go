@@ -43,7 +43,7 @@ func CompressDir(dataDir, date, format string) error {
 	case "bz2":
 		panic(fmt.Errorf("bzip2 has no writer"))
 	case "zst":
-		zw, err := zstd.NewWriter(f)
+		zw, err := zstd.NewWriter(f, zstd.WithEncoderLevel(zstd.SpeedBetterCompression))
 		if err != nil {
 			return err
 		}
