@@ -82,25 +82,28 @@ func (s *Server) UploadLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Validate date (YYYY-MM, within 10 days)
+	// Validate date (YYYY-MM, within 10 days, UTC)
 	dateTime, err := time.Parse("2006-01", date)
 	if err != nil {
 		s.jsonError(w, http.StatusBadRequest, "invalid_date", "Invalid date format", "X-File-Date must be YYYY-MM")
 		return
 	}
-	now := time.Now()
-	early := now.AddDate(0, -1, 0)
-	late := now.AddDate(0, 0, 1)
-	if dateTime.Before(early) || dateTime.After(late) {
+	now := time.Now().UTC()
+	firstOfCurrentMonth := time.Date(now.Year(), now.Month(), 1, 0, 0, 0, 0, time.UTC)
+	firstOfLastMonth := firstOfCurrentMonth.AddDate(0, -1, 0)
+	tomorrow := now.AddDate(0, 0, 1)
+	if dateTime.Before(firstOfLastMonth) || dateTime.After(tomorrow) {
 		s.jsonError(
 			w,
 			http.StatusBadRequest,
 			"date_out_of_range",
 			"Date out of range",
 			fmt.Sprintf(
-				"Date must be between %s and %s",
-				early.Format("2006-01"),
-				late.Format("2006-01"),
+				"Date must be between %s and %s, but got %s (%s)",
+				firstOfLastMonth.Format("2006-01-02 15:04:05"),
+				tomorrow.Format("2006-01-02 15:04:05"),
+				now.Format("2006-01"),
+				now.Format("2006-01 15:04:05"),
 			),
 		)
 		return
